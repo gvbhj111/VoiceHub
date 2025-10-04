@@ -6,24 +6,91 @@
   NODE_VERSION = "20"
   NITRO_PRESET = "netlify"
 
+[[plugins]]
+  package = "@netlify/plugin-functions-install-core"
+
 [functions]
   directory = ".netlify/functions-internal"
   node_bundler = "esbuild"
   # 增加内存限制和超时时间
   [functions."server"]
     included_files = ["drizzle/**/*"]
-    external_node_modules = []
+    external_node_modules = ["@netlify/functions"]
     node_bundler = "esbuild"
 
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/server"
-  status = 200
+# Headers configuration to prevent conflicts
+[[headers]]
+  for = "/_nuxt/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Connection = "keep-alive"
+    Expires = "0"
+    Pragma = "no-cache"
 
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/login"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Expires = "0"
+    Pragma = "no-cache"
+
+[[headers]]
+  for = "/dashboard"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Expires = "0"
+    Pragma = "no-cache"
+
+[[headers]]
+  for = "/change-password"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Expires = "0"
+    Pragma = "no-cache"
+
+[[headers]]
+  for = "/notification-settings"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Expires = "0"
+    Pragma = "no-cache"
+
+[[headers]]
+  for = "/notifications"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Expires = "0"
+    Pragma = "no-cache"
+
+[[headers]]
+  for = "/*/*.{png,jpg,jpeg,gif,webp,svg,ico}"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*/*.{css,js}"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
 
 [template.environment]
   DATABASE_URL = "Neon数据库连接字符串，格式如：postgresql://username:password@host:port/database?sslmode=require"
